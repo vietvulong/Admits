@@ -187,7 +187,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
          */
         $scope.typeaheadMajor = function (val) {
             $scope.isLoading = true;
-            return $http.post('/typeahead', {
+            return $http.post('public/typeahead', {
                 key: 'Target_Major',
                 value: val
             }).then(function (response) {
@@ -273,7 +273,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
             'english_taken':false,
         }
 
-
+        $scope.typeAhead = {};
         /**
          * Filtered data term
          * @type {{}}
@@ -349,6 +349,9 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
             }
         };
 
+        $scope.onMajorTypeAheadChanged = function ( event) {
+            console.log(event);
+        };
         /**
          * Type ahead College
          * @returns {*}
@@ -519,6 +522,20 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
         $scope.$watch('filterApplied', function (newVal, oldVal) {
             if (!_.isEqual(newVal, oldVal)) {
                 $scope.queryFilteredResult();
+            }
+        }, true);
+
+        $scope.$watch('typeAhead', function(newVal, oldVal) {
+            if(!newVal.target_major) {
+                let smartBaseFilter = { ...$scope.smartBaseFilter };
+                delete smartBaseFilter.target_major;
+                $scope.smartBaseFilter = { ...smartBaseFilter };
+            }
+            if(!newVal.department) {
+                let smartBaseFilter = { ...$scope.smartBaseFilter };
+                delete smartBaseFilter.department;
+                $scope.smartBaseFilter = { ...smartBaseFilter };
+                
             }
         }, true);
 
@@ -1001,7 +1018,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
         };
 
 
-
+        
         $scope.validateSmartFilter = function (data) {
             var gre_v = parseInt(data.gre_v);
             var gre_q = parseInt(data.gre_q);
@@ -1054,31 +1071,35 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
             
         }
         $scope.smartFilter = function() {
+            //$scope.smartBaseFilter = {...$scope.filterApplied};
             ModalService.showModal({
                 templateUrl:"smart-filter-modal",
                 scope:$scope,
                 controller: function($scope, $element, close) {
                     $scope.smartFilterBtnClicked = function() {
                         $scope.smartBaseFilter.errors= {};
-                        
                         if($scope.validateSmartFilter($scope.smartBaseFilter)) {
                             if('target_major' in $scope.smartBaseFilter) {
-                                $scope.filterApplied.target_major = $scope.smartBaseFilter.target_major;
-                                $scope.listBasedFilter.target_major = $scope.smartBaseFilter.target_major;
-                                delete $scope.smartBaseFilter.target_major;
+                                    $scope.filterApplied.target_major = $scope.smartBaseFilter.target_major;
+                                    $scope.listBasedFilter.target_major = $scope.smartBaseFilter.target_major;
                             }
-                                
+                            else {
+                                delete $scope.filterApplied.target_major;
+                                delete $scope.listBasedFilter.target_major;
+                            }
                             if('term' in $scope.smartBaseFilter) {
                                 if($scope.smartBaseFilter.term!="") {
-                                    $scope.listBasedFilter.term = $scope.smartBaseFilter.term;
-                                    $scope.filterApplied.term = $scope.listBasedFilter.term;
+                                    $scope.listBasedFilter.term = [...$scope.smartBaseFilter.term];
+                                    $scope.filterApplied.term = [...$scope.smartBaseFilter.term];
                                 }
-                                delete $scope.smartBaseFilter.term;
                             }
                             if('department' in $scope.smartBaseFilter) {
                                 $scope.listBasedFilter.department = $scope.smartBaseFilter.department;
                                 $scope.filterApplied.department = $scope.listBasedFilter.department;
-                                delete $scope.smartBaseFilter.department;
+                            }
+                            else {
+                                delete $scope.filterApplied.department;
+                                delete $scope.listBasedFilter.department;
                             }
                             if('grade' in $scope.smartBaseFilter &&  $scope.smartBaseFilter.grade!="")
                             {
@@ -1093,7 +1114,6 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                                 $scope.listBasedFilter.grade_scale = [grade_scale];
                                 $scope.filterApplied.grade_scale = $scope.listBasedFilter.grade_scale;
 
-                                delete $scope.smartBaseFilter.grade;
                             }
                             
                             if('gre_v' in $scope.smartBaseFilter && $scope.smartBaseFilter.gre_v!="") {
@@ -1101,14 +1121,12 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                                 $scope.listBasedFilter.gre_v = [gre_v - 10, gre_v + 10];
                                 $scope.filterApplied.gre_v = [gre_v - 10, gre_v + 10];
 
-                                delete $scope.smartBaseFilter.gre_v;
                             }
                             if('gre_q' in $scope.smartBaseFilter && $scope.smartBaseFilter.gre_q!="") {
                                 var gre_q = parseInt($scope.smartBaseFilter.gre_q);
                                 $scope.listBasedFilter.gre_q = [gre_q - 10, gre_q + 10];
                                 $scope.filterApplied.gre_q = [gre_q - 10, gre_q + 10];
 
-                                delete $scope.smartBaseFilter.gre_q;
                             
                             }
                             if('eng_score' in $scope.smartBaseFilter && $scope.smartBaseFilter.eng_score!="") {
@@ -1124,7 +1142,6 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                                         $scope.listBasedFilter.eng_scale=[120];
                                         $scope.filterApplied.eng_scale=[120];
                                     }
-                                    delete $scope.smartBaseFilter.eng_score;
                             }
                             $scope.queryFilteredResult();
                             $element.modal('hide');
