@@ -1,0 +1,24 @@
+#btn-term-button {
+  border: solid 1px #c9c9c9;
+  background-color: #fff;
+  border-radius: 10px;
+}
+#btn-term-button:hover {
+  border-color: #7ed321;
+}
+#btn-term-button:focus {
+  border-color: #7ed321;
+  color: #7ed321;
+}
+#btn-term-button.active.focus,
+#btn-term-button.active:focus,
+#btn-term-button.focus,
+#btn-term-button:active.focus,
+#btn-term-button:active:focus,
+#btn-term-button:focus {
+  outline: none;
+}
+#btn-term-button.active {
+  border-color: #7ed321;
+  color: #7ed321;
+}
