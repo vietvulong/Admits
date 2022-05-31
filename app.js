@@ -1088,10 +1088,8 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                                 delete $scope.listBasedFilter.target_major;
                             }
                             if('term' in $scope.smartBaseFilter) {
-                                if($scope.smartBaseFilter.term!="") {
                                     $scope.listBasedFilter.term = [...$scope.smartBaseFilter.term];
                                     $scope.filterApplied.term = [...$scope.smartBaseFilter.term];
-                                }
                             }
                             if('department' in $scope.smartBaseFilter) {
                                 $scope.listBasedFilter.department = $scope.smartBaseFilter.department;
