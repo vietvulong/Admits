@@ -6,10 +6,6 @@
 #btn-term-button:hover {
   border-color: #7ed321;
 }
-#btn-term-button:focus {
-  border-color: #7ed321;
-  color: #7ed321;
-}
 #btn-term-button.active.focus,
 #btn-term-button.active:focus,
 #btn-term-button.focus,
