@@ -187,7 +187,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
          */
         $scope.typeaheadMajor = function (val) {
             $scope.isLoading = true;
-            return $http.post('public/typeahead', {
+            return $http.post('/typeahead', {
                 key: 'Target_Major',
                 value: val
             }).then(function (response) {
@@ -811,10 +811,8 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                     }
                     break;
                 case "Major":
-
-
-                    // delete $scope.listBasedFilter.target_major;
                     delete $scope.filterApplied.target_major;
+
                     break;
                 case "Term":
                     $scope.listBasedFilter.term.splice(removeVal, 1);
@@ -994,6 +992,8 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
          */
         $scope.resetFilter = function () {
             $scope.filterApplied = {};
+            $scope.smartBaseFilter = {};
+            $scope.typeAhead = {};
             $scope.listBasedFilter.status = ['Admit', 'Reject'];
             $scope.listBasedFilter.term = ['Spring', 'Fall'];
             $scope.listBasedFilter.eng_scale = [9, 120];
