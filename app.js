@@ -502,7 +502,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
 
             //console.log(url.searchParams.get("status"));
             
-            $http.post('/filter', $scope.filterApplied)
+            $http.post('/public/filter', $scope.filterApplied)
                 .success(function (response) {
                     $scope.loadingData = false;
                     $scope.filteredCollection = response.result.data;
@@ -546,7 +546,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
         $scope.pageChanged = function (val) {
             $scope.loadingData = true;
             stopTracking();
-            $http.post('/filter?page=' + $scope.pagination.current_page, $scope.filterApplied).success(function (response) {
+            $http.post('/public/filter?page=' + $scope.pagination.current_page, $scope.filterApplied).success(function (response) {
                 $scope.loadingData = false;
                 $scope.displayedCollection = response.result.data;//changed from filteredCollection for manual pagination
                 $scope.pagination = response.result;
@@ -775,7 +775,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
         }
         
         history.pushState('', '', url);
-        $http.post('/filter', base_init).success(function (response) {
+        $http.post('/public/filter', base_init).success(function (response) {
             $scope.loadingData = false;
             if('init' in base_init) {
               // This is default data view
@@ -1024,17 +1024,17 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
             var gre_q = parseInt(data.gre_q);
             var eng_score = parseInt(data.eng_score);
             
-            if( Number.isNaN(gre_v) == false && (gre_v < 140 || gre_v > 160))
+            if( Number.isNaN(gre_v) == false && (gre_v < 130 || gre_v > 170))
             {
-                data.errors.gre_v="Must be between 140-160";
+                data.errors.gre_v="Must be between 130-170";
                 return false;
             }     
-            if( Number.isNaN(gre_q) == false &&   (gre_q < 140 || gre_q > 160)) {
-                data.errors.gre_q="Must be between 140-160";
+            if( Number.isNaN(gre_q) == false &&   (gre_q < 130 || gre_q > 170)) {
+                data.errors.gre_q="Must be between 130-170";
                 return false;
             }
-            if( Number.isNaN(eng_score) == false &&   (eng_score < 0 || eng_score > 110)) {
-                data.errors.eng_score="Must be between 0-110";
+            if( Number.isNaN(eng_score) == false &&   (eng_score < 0 || eng_score > 120)) {
+                data.errors.eng_score="Must be between 0-120";
                 return false;
             }
             return true;
@@ -1116,14 +1116,14 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                             
                             if('gre_v' in $scope.smartBaseFilter && $scope.smartBaseFilter.gre_v!="") {
                                 var gre_v = parseInt($scope.smartBaseFilter.gre_v );
-                                $scope.listBasedFilter.gre_v = [gre_v - 10, gre_v + 10];
-                                $scope.filterApplied.gre_v = [gre_v - 10, gre_v + 10];
+                                $scope.listBasedFilter.gre_v = [Math.max(gre_v - 10, 130), Math.min(gre_v + 10, 170)];
+                                $scope.filterApplied.gre_v = [Math.max(gre_v - 10, 130), Math.min(gre_v + 10, 170)];
 
                             }
                             if('gre_q' in $scope.smartBaseFilter && $scope.smartBaseFilter.gre_q!="") {
                                 var gre_q = parseInt($scope.smartBaseFilter.gre_q);
-                                $scope.listBasedFilter.gre_q = [gre_q - 10, gre_q + 10];
-                                $scope.filterApplied.gre_q = [gre_q - 10, gre_q + 10];
+                                $scope.listBasedFilter.gre_q =  [Math.max(gre_q - 10, 130), Math.min(gre_q + 10, 170)];
+                                $scope.filterApplied.gre_q = [Math.max(gre_q - 10, 130), Math.min(gre_q + 10, 170)];
 
                             
                             }
@@ -1135,8 +1135,8 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
                                         $scope.listBasedFilter.eng_scale=[9];
                                         $scope.filterApplied.eng_scale=[9];
                                     } else {
-                                        $scope.listBasedFilter.eng = [eng_score - 10, eng_score + 10];
-                                        $scope.filterApplied.eng = [eng_score - 10, eng_score + 10];
+                                        $scope.listBasedFilter.eng = [eng_score - 10, Math.min(eng_score + 10, 120)];
+                                        $scope.filterApplied.eng = [eng_score - 10, Math.min(eng_score + 10, 120)];
                                         $scope.listBasedFilter.eng_scale=[120];
                                         $scope.filterApplied.eng_scale=[120];
                                     }
