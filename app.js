@@ -502,7 +502,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
 
             //console.log(url.searchParams.get("status"));
             
-            $http.post('/public/filter', $scope.filterApplied)
+            $http.post('/filter', $scope.filterApplied)
                 .success(function (response) {
                     $scope.loadingData = false;
                     $scope.filteredCollection = response.result.data;
@@ -546,7 +546,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
         $scope.pageChanged = function (val) {
             $scope.loadingData = true;
             stopTracking();
-            $http.post('/public/filter?page=' + $scope.pagination.current_page, $scope.filterApplied).success(function (response) {
+            $http.post('/filter?page=' + $scope.pagination.current_page, $scope.filterApplied).success(function (response) {
                 $scope.loadingData = false;
                 $scope.displayedCollection = response.result.data;//changed from filteredCollection for manual pagination
                 $scope.pagination = response.result;
@@ -775,7 +775,7 @@ angular.module('mainApp', ['ui.bootstrap', 'smart-table', 'ngToast', 'ui.bootstr
         }
         
         history.pushState('', '', url);
-        $http.post('/public/filter', base_init).success(function (response) {
+        $http.post('/filter', base_init).success(function (response) {
             $scope.loadingData = false;
             if('init' in base_init) {
               // This is default data view
